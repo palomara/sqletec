@@ -6,6 +6,7 @@ use banco_scratch;
 
 
 
+
 -- Tabelas --
 
 create table tb_pessoas (
@@ -127,29 +128,30 @@ left join tarefa_participantes as t on c.id_pessoa = t.id_tarefa
 where id_tarefa is NULL;
 
 -- os nomes das metodologias mais utilizadas
-select COUNT (metodo_nome) as Metodolgia from tb_metodologias group by titulo order by count(titulo) DESC;
+select COUNT (metodo_nome) as Metodolgia from tb_metodologias group by metodo_nome order by (metodo_nome) DESC;
 
 --quantidade de tarefas realizadas com mulheres
 
 select c.titulo, p.sexo
-select count(*) as 'Mulheres'
 from tb_tarefa as c  
 left join tb_pessoas as p on c.id_tarefa = p.id_pessoa 
-where sexo = 'f';
+where sexo = 'f'
+select count(*) as 'Mulheres'
+
 
 --quantidade de tarefas realizadas com homens
 
-select c.titulo, p.sexo
-select count(*) as 'Homens'
+select c.titulo as 'Tarefa', p.sexo as 'Sexo'
 from tb_tarefa as c  
-left join tb_pessoas as p on c.id_tarefa = p.id_pessoa 
-where sexo = 'm';
+right join tb_pessoas as p on c.id_tarefa = p.id_pessoa 
+where sexo = 'm'
+select count(*) as 'Homens'
 
 --pessoas com tarefas atrasadas
 
-select p.nome as 'Nome', t.prazo as 'Prazo', t.datatermino as 'Termino'
+select p.nome as 'Nome', t.prazo_estimado as 'Prazo', t.data_termino as 'Termino'
 from tb_pessoas as p
 join tarefa_participantes as r
-on p.id = r.id_pessoa
+on p.id_pessoa = r.id_pessoa
 join tb_tarefa as t
-on r.id_tarefa = t.id where t.datatermino > t.prazo
+on r.id_tarefa = t.id_tarefa where t.data_termino > t.prazo_estimado
