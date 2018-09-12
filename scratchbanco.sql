@@ -70,7 +70,7 @@ insert into tb_metodologias (metodo_nome)
 values ('Pomodoro'),
 ('Método Feynmann'),
 ('Scrum'),
-('Metodologia ágil'),
+('Scrum'),
 ('Pomodoro');
 
 -- insert tb_tarefas --
@@ -80,9 +80,9 @@ insert into tb_tarefa (titulo, prazo_estimado,descricao, data_inicio, data_termi
 values
  ('Trabalho de Matematica', '2018-08-20', 'Resolver exercicios de calculo I', '2018-08-07', '2018-08-07'),
 
- ('Topico do TCC', '2018-08-08', 'Adicionar o indice de figuras', '2018-08-07', '2018-08-07'),
+ ('Topico do TCC', '2018-08-08', 'Adicionar o indice de figuras', '2018-08-07', '2018-08-09'),
 
- ('Redação', '2018-08-18', 'Dissertacao argumentativa sobre a saude no Brasil','2018-08-04', '2018-08-05'),
+ ('Redação', '2018-08-18', 'Dissertacao argumentativa sobre a saude no Brasil','2018-08-04', '2018-08-20'),
 
  ('Calculadora em JAVA', '2018-08-09', 'Calculadora com soma, subtracao, multiplicacao e divisao', '2018-08-05', '2018-08-07'),
 
@@ -122,21 +122,22 @@ values (0,1),(0,2),
 
 --pessoas que não fazem parte de nenhuma tarefa
 
-select c.nome, t.id_tarefa
+select c.nome as 'Nome', t.id_tarefa as 'Tarefa'
 from tb_pessoas as c  
 left join tarefa_participantes as t on c.id_pessoa = t.id_tarefa 
 where id_tarefa is NULL;
 
 -- os nomes das metodologias mais utilizadas
-select COUNT (metodo_nome) as Metodolgia from tb_metodologias group by metodo_nome order by (metodo_nome) DESC;
+select COUNT (metodo_nome) as 'Quantidade', metodo_nome as 'Método' from tb_metodologias group by metodo_nome order by (metodo_nome) DESC;
 
 --quantidade de tarefas realizadas com mulheres
 
-select c.titulo, p.sexo
+select c.titulo as 'Tarefa', p.sexo as 'Sexo'
 from tb_tarefa as c  
 left join tb_pessoas as p on c.id_tarefa = p.id_pessoa 
 where sexo = 'f'
-select count(*) as 'Mulheres'
+
+select count(sexo) as 'Mulheres' from tb_pessoas where sexo = 'f'
 
 
 --quantidade de tarefas realizadas com homens
@@ -145,7 +146,8 @@ select c.titulo as 'Tarefa', p.sexo as 'Sexo'
 from tb_tarefa as c  
 right join tb_pessoas as p on c.id_tarefa = p.id_pessoa 
 where sexo = 'm'
-select count(*) as 'Homens'
+
+select count(sexo) as 'Homens' from tb_pessoas where sexo = 'm'  
 
 --pessoas com tarefas atrasadas
 
