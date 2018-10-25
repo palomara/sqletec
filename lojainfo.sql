@@ -12,7 +12,8 @@ create table tb_cliente (
 	nome		nvarchar (60),
 	endrç		nvarchar (100),
 	fone		nvarchar (20),
-	email		nvarchar (60))
+	email		nvarchar (60)
+)
 
 create table tb_hardware (
 	id_hardware	int primary key identity (1,1) NOT NULL,
@@ -48,6 +49,16 @@ create table vendas_itens (
 	foreign key (id_hardware) references tb_hardware (id_hardware)
 	
 	)
+	
+create table tb_cliente_auditoria (
+	id_cliente	int primary key identity (1,1)NOT NULL,
+	nome		nvarchar (60),
+	endrç		nvarchar (100),
+	fone		nvarchar (20),
+	email		nvarchar (60),
+	acao_auditoria nvarchar (100),
+	data_auditoria date, 
+)	
 
 insert into tb_cliente (nome, endrç, fone, email)
 values 
@@ -88,7 +99,37 @@ IF OBJECT_ID ('dbo.selec_produtos_desconto') is not null
 	go
 create procedure dbo.selec_produtos_desconto as
 begin
-	select * from tb_hardware
+	update tb_hardware set preço=preço-(preço*0.30)
+	select (id_hardware) as 'ID Hardware', (descricao) as 'Descrição', (preço) as 'Preço', (qtde) as 'Qtd', (qtdemin) as 'Qtd Mín' from tb_hardware
+	
 end
 go
 exec dbo.selec_produtos_desconto;
+
+go 
+
+create trigger trq_AfterInserCliente 
+on tb_cliente
+ instead of insert
+as
+begin 
+
+declare @cliId int;
+declare @cliNome nvarchar (60);
+declare @cliEnd nvarchar(100);
+declare @cliFone nvarchar(20);
+declare @cliEmail nvarchar(60);
+declare @audit_action nvarchar (100);
+
+select @cliId = i.id_cliente from inserted i;
+select @cliNome = i.nome from inserted i;
+select @cliEnd = i.endrç from inserted i;
+select @cliEmail = i.email from inserted i;
+
+set @audit_action = 'Registro inserido';
+
+insert into tb_cliente_auditoria (id_cliente, nome, fone, email, acao_auditoria, data_auditoria)
+values (@cliId, @cliNome, @cliEnd, @cliEmail, @cliFone, @cliEnd, @audit_action, getdate());
+
+end
+go
