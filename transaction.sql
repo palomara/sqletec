@@ -13,7 +13,7 @@ nome nvarchar (100)
 
 create table tb_pessoa (
 id_pessoa int primary key identity (0,1)NOT NULL,
-nome nvarchar (100)
+nome nvarchar (100),
 )
 
 create table rel_dpto_pessoa (
@@ -77,3 +77,19 @@ go
 select id_pessoa as 'ID', nome as 'Nome' from tb_pessoa
 select id_dpto as 'ID', nome as 'Departamento' from tb_dpto
 select id as 'ID', id_dpto as 'Departamento', id_pessoa as 'Pessoa' from rel_dpto_pessoa
+
+go 
+
+create trigger trg_InsertDpto
+on tb_dpto
+	for insert
+as 
+--if exists (idDpto )
+begin
+	declare @idDpto int; 
+	select @idDpto = i.id_dpto from inserted i;
+	
+select * from rel_dpto_pessoa
+
+ end 
+ go
